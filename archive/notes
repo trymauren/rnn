@@ -1,0 +1,58 @@
+batches = 5
+
+        partitions = np.floor(time_steps/num_hidden_states)
+        X_split = np.split(X, batches)
+        y_split = np.split(y, batches)
+        # X_split,y_split = self.windowed_data(X,num_hidden_states)
+        self.stats['loss'] = [0]*epochs
+
+        for e in tqdm(range(epochs)):
+
+            for x_batch, y_batch in zip(X_split, y_split):
+
+                y_pred_batch = np.zeros_like(y_batch)
+
+                for idx, (x, y) in enumerate(zip(x_batch, y_batch)):
+                    y_pred = self._forward(
+                        x,
+                        num_hidden_states
+                    )
+                    y_pred_batch[idx] = y_pred
+
+                    # self.loss(self.ys, y, e)
+                print(y_batch.shape)
+                print(y_pred_batch.shape)
+                exit()
+                self._backward(
+                    y_batch,
+                    y_pred_batch,
+                    num_hidden_nodes
+                )
+
+        partitions = np.floor(time_steps/num_hidden_states)
+
+        # X_split,y_split = self.windowed_data(X,num_hidden_states)
+        self.stats['loss'] = [0]*epochs
+
+        for e in tqdm(range(epochs)):
+
+            for example in range(examples):
+
+                X_split = np.split(X[example], partitions, axis=0)
+                y_split = np.split(y[example], partitions, axis=0)
+
+                for X_partition, y_partition in zip(X_split, y_split):
+                    print(X_partition.shape)
+                    print(y_partition.shape)
+                    y_pred = self._forward(
+                        X_partition,
+                        num_hidden_states
+                    )
+
+                    self._backward(
+                        y_partition,
+                        y_pred,
+                        num_hidden_nodes
+                    )
+
+                    self.loss(self.ys, y_partition, e)

@@ -1,0 +1,1 @@
+# This folder contains text-data used to train the RNN.
